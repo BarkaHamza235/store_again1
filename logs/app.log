@@ -688,3 +688,5 @@ INFO 2025-08-01 20:03:32,145 autoreload 12676 10424 Watching for file changes wi
 WARNING 2025-08-01 20:03:36,709 log 12676 4392 Not Found: /favicon.ico
 INFO 2025-08-02 00:59:14,952 autoreload 11504 16048 Watching for file changes with StatReloader
 INFO 2025-08-02 02:06:41,887 autoreload 3108 18036 Watching for file changes with StatReloader
+INFO 2025-08-02 02:52:57,208 autoreload 12172 16440 Watching for file changes with StatReloader
+INFO 2025-08-02 02:55:19,190 forms 12172 10604 Nouvel utilisateur créé: bhb (Administrateur)
