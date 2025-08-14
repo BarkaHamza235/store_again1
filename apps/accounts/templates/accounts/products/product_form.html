@@ -44,6 +44,9 @@
     margin-left: 1rem;
     text-decoration: none;
   }
+  .form-file {
+    margin-top: 1rem;
+  }
 </style>
 {% endblock %}
 
@@ -53,7 +56,7 @@
     {% if object %}Modifier Produit{% else %}Ajouter Produit{% endif %}
   </h1>
 
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <!-- Ligne 1 : Nom et Catégorie -->
@@ -87,6 +90,13 @@
     <div class="form-row">
       <div class="form-col">
         {{ form.description|as_crispy_field }}
+      </div>
+    </div>
+
+    <!-- Ligne 5 : Image -->
+    <div class="form-row form-file">
+      <div class="form-col">
+        {{ form.image|as_crispy_field }}
       </div>
     </div>
 

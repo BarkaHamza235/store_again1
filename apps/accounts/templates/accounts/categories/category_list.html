@@ -4,26 +4,43 @@
 {% block title %}Gestion des Catégories{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-  <!-- En-tête -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h1 class="h3 mb-0">
-        <i class="fas fa-tags text-primary"></i> Gestion des Catégories
+<div class="container-fluid px-4 mt-5">
+  <!-- Header avec ajout et retour au dashboard -->
+  <div class="d-flex justify-content-between align-items-center mb-4 category-header">
+    <div class="header_titre">
+      <h1 class="h3 mb-0 text-light-800">
+        <i class="fas fa-tags me-2 text-light"></i>Gestion des Catégories
       </h1>
-      <p class="text-muted">Gérez vos catégories de produits</p>
+      <p class="text-muted mb-2">Gérez vos catégories de produits</p>
     </div>
-    <a href="{% url 'accounts:category_add' %}" class="btn btn-primary">
-      <i class="fas fa-plus"></i> Ajouter une catégorie
-    </a>
+    <div>
+      <a href="{% url 'accounts:category_add' %}" class="btn btn-primary me-2">
+        <i class="fas fa-plus me-1"></i>Ajouter une catégorie
+      </a>
+      <a href="{% url 'core:dashboard' %}" class="btn btn-outline-light">
+        <i class="fas fa-home me-1"></i>Tableau de bord
+      </a>
+    </div>
   </div>
+  <style>
+    .category-header {
+        margin-top: 2rem; /* Ajustez la valeur selon le positionnement souhaité */
+    }
+    .header_titre{
+        margin-top: -1rem;
+    }
+    p{
+        font-size: 14px;
+        margin-left: 80px;
+    }
+  </style>
 
   <!-- Statistiques -->
   <div class="row mb-4">
     <div class="col-md-3">
-      <div class="card bg-light border-0 h-100">
+      <div class="card border-left-primary shadow h-100 py-2">
         <div class="card-body text-center">
-          <h6 class="text-primary mb-0">TOTAL CATÉGORIES</h6>
+          <h6 class="text-primary mb-0">Total Catégories</h6>
           <h2 class="mb-0">{{ total }}</h2>
         </div>
       </div>
@@ -31,16 +48,16 @@
   </div>
 
   <!-- Filtres et recherche -->
-  <div class="card border-0 mb-4">
+  <div class="card shadow mb-4">
     <div class="card-body">
       <div class="row mb-3">
-        <div class="col-12">
+        <div class="col-12 text-primary">
           <h6 class="card-title mb-0">
-            <i class="fas fa-filter text-primary"></i> Filtres et recherche
+            <i class="fas fa-filter me-2 text-primary"></i>Filtres et recherche
           </h6>
         </div>
       </div>
-      <form method="GET" class="row g-3 align-items-end">
+      <form method="get" class="row g-3 align-items-end">
         <div class="col-md-4">
           <input type="text"
                  name="search"
@@ -50,12 +67,12 @@
         </div>
         <div class="col-md-2">
           <button type="submit" class="btn btn-primary w-100">
-            <i class="fas fa-search"></i> Filtrer
+            <i class="fas fa-search me-1"></i>Filtrer
           </button>
         </div>
         <div class="col-md-2">
           <a href="{% url 'accounts:category_list' %}" class="btn btn-outline-secondary w-100">
-            <i class="fas fa-sync-alt"></i> Réinitialiser
+            <i class="fas fa-sync-alt me-1"></i>Réinitialiser
           </a>
         </div>
       </form>
@@ -63,10 +80,10 @@
   </div>
 
   <!-- Liste des catégories -->
-  <div class="card border-0">
-    <div class="card-body">
+  <div class="card shadow mb-4">
+    <div class="card-body text-primary">
       <h6 class="card-title mb-3">
-        <i class="fas fa-list text-primary"></i> Liste des catégories
+        <i class="fas fa-list me-2 text-primary"></i>Liste des catégories
       </h6>
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -80,58 +97,102 @@
           </thead>
           <tbody>
             {% for category in categories %}
-            <tr>
-              <td>{{ category.name }}</td>
-              <td>{{ category.description|truncatechars:50 }}</td>
-              <td>{{ category.created_at|date:"d/m/Y" }}</td>
-              <td>
-                <a href="{% url 'accounts:category_detail' category.pk %}" class="btn btn-sm btn-info me-1">
-                  <i class="fas fa-eye"></i>
-                </a>
-                <a href="{% url 'accounts:category_edit' category.pk %}" class="btn btn-sm btn-warning me-1">
-                  <i class="fas fa-edit"></i>
-                </a>
-                <a href="{% url 'accounts:category_delete' category.pk %}" class="btn btn-sm btn-danger">
-                  <i class="fas fa-trash"></i>
-                </a>
-              </td>
-            </tr>
+              <tr>
+                <td class="font-weight-bold">{{ category.name }}</td>
+                <td>{{ category.description|truncatechars:50 }}</td>
+                <td>{{ category.created_at|date:"d/m/Y" }}</td>
+                <td>
+                  <a href="{% url 'accounts:category_detail' category.pk %}" 
+                     class="btn btn-sm btn-info me-1" title="Voir">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                  <a href="{% url 'accounts:category_edit' category.pk %}" 
+                     class="btn btn-sm btn-warning me-1" title="Modifier">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <a href="{% url 'accounts:category_delete' category.pk %}" 
+                     class="btn btn-sm btn-danger" title="Supprimer">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </td>
+              </tr>
             {% empty %}
-            <tr>
-              <td colspan="4" class="text-center py-4 text-muted">
-                Aucune catégorie trouvée.
-              </td>
-            </tr>
+              <tr>
+                <td colspan="4" class="text-center py-4">
+                  <div class="text-muted">
+                    <i class="fas fa-tags fa-3x mb-3"></i>
+                    <p>Aucune catégorie trouvée.</p>
+                    <a href="{% url 'accounts:category_add' %}" class="btn btn-primary">
+                      <i class="fas fa-plus me-1"></i>Ajouter une catégorie
+                    </a>
+                  </div>
+                </td>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
       {% if is_paginated %}
-      <nav class="mt-3">
-        <ul class="pagination justify-content-center">
-          {% if page_obj.has_previous %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_form.cleaned_data.search %}&search={{ search_form.cleaned_data.search }}{% endif %}">
-              Précédent
-            </a>
-          </li>
-          {% endif %}
-          <li class="page-item active">
-            <span class="page-link">
-              Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
-            </span>
-          </li>
-          {% if page_obj.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_form.cleaned_data.search %}&search={{ search_form.cleaned_data.search }}{% endif %}">
-              Suivant
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-      </nav>
+        <nav class="mt-3">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_form.cleaned_data.search %}&search={{ search_form.cleaned_data.search }}{% endif %}">
+                  <i class="fas fa-chevron-left"></i> Précédent
+                </a>
+              </li>
+            {% endif %}
+            <li class="page-item disabled">
+              <span class="page-link">
+                Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+              </span>
+            </li>
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_form.cleaned_data.search %}&search={{ search_form.cleaned_data.search }}{% endif %}">
+                  Suivant <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
       {% endif %}
     </div>
   </div>
 </div>
+
+<style>
+.category-header {
+  margin-top: -1rem;
+}
+.border-left-primary {
+  border-left: 0.25rem solid #4e73df !important;
+}
+.border-left-success {
+  border-left: 0.25rem solid #1cc88a !important;
+}
+.border-left-warning {
+  border-left: 0.25rem solid #f6c23e !important;
+}
+.border-left-secondary {
+  border-left: 0.25rem solid #858796 !important;
+}
+.text-gray-800 {
+  color: #5a5c69 !important;
+}
+.text-gray-600 {
+  color: #858796 !important;
+}
+.text-gray-500 {
+  color: #b7b9cc !important;
+}
+.text-gray-300 {
+  color: #dddfeb !important;
+}
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+</style>
 {% endblock %}

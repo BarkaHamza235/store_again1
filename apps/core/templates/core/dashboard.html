@@ -4,242 +4,229 @@
 
 {% block content %}
 <div class="d-flex min-vh-100">
-    <!-- Sidebar -->
-    <div class="sidebar" style="width: 280px;">
-        <div class="p-3">
-            <div class="text-center mb-4">
-                <i class="fas fa-store fa-3x text-white mb-2"></i>
-                <h4 class="text-white fw-bold">Store Manager</h4>
-                <small class="text-white-50">Version 1.0</small>
-            </div>
-
-            <div class="mb-3">
-                <div class="d-flex align-items-center text-white mb-2">
-                    <i class="fas fa-user-circle fa-2x me-3"></i>
-                    <div>
-                        <div class="fw-semibold">{{ user.get_full_name|default:user.username }}</div>
-                        <small class="opacity-75">{{ user_role }}</small>
-                    </div>
-                </div>
-            </div>
-
-            <hr class="border-white opacity-25">
-
-            <!-- Navigation -->
-            <nav class="nav flex-column">
-                <a class="nav-link active" href="{% url 'core:dashboard' %}">
-                    <i class="fas fa-tachometer-alt me-2"></i>
-                    Tableau de bord
-                </a>
-                <a class="nav-link" href="{% url 'accounts:employee_list' %}" title="Bientôt disponible">
-                    <i class="fas fa-users me-2"></i>
-                    Employés
-                </a>
-                <a class="nav-link" href="{% url 'accounts:supplier_list' %}" title="Bientôt disponible">
-                    <i class="fas fa-truck me-2"></i>
-                    Fournisseurs
-                </a>
-                <a class="nav-link" href="{% url 'accounts:category_list' %}" title="Bientôt disponible">
-                    <i class="fas fa-tags me-2"></i>
-                    Catégories
-                </a>
-                <a class="nav-link" href="{% url 'accounts:product_list' %}" title="Bientôt disponible">
-                    <i class="fas fa-boxes me-2"></i>
-                    Produits
-                </a>
-                <a class="nav-link" href="{% url 'accounts:sale_list' %}" title="Bientôt disponible">
-                    <i class="fas fa-chart-line me-2"></i>
-                    Ventes
-                </a>
-
-                <hr class="border-white opacity-25">
-
-                <a class="nav-link" href="{% url 'accounts:logout' %}" onclick="return confirmLogout()">
-                    <i class="fas fa-sign-out-alt me-2"></i>
-                    Déconnexion
-                </a>
-            </nav>
+  <!-- Sidebar -->
+  <div class="sidebar" style="width: 280px;">
+    <div class="p-3">
+      <div class="text-center mb-4">
+        <i class="fas fa-store fa-3x text-white mb-2"></i>
+        <h4 class="text-white fw-bold">Store Manager</h4>
+        <small class="text-white-50">Version 1.0</small>
+      </div>
+      <div class="mb-3">
+        <div class="d-flex align-items-center text-white mb-2">
+          <i class="fas fa-user-circle fa-2x me-3"></i>
+          <div>
+            <div class="fw-semibold">{{ user.get_full_name|default:user.username }}</div>
+            <small class="opacity-75">{{ user_role }}</small>
+          </div>
         </div>
+      </div>
+      <hr class="border-white opacity-25">
+      <nav class="nav flex-column">
+        <a class="nav-link active" href="{% url 'core:dashboard' %}">
+          <i class="fas fa-tachometer-alt me-2"></i>Tableau de bord
+        </a>
+        <a class="nav-link" href="{% url 'accounts:employee_list' %}">
+          <i class="fas fa-users me-2"></i>Employés
+        </a>
+        <a class="nav-link" href="{% url 'accounts:supplier_list' %}">
+          <i class="fas fa-truck me-2"></i>Fournisseurs
+        </a>
+        <a class="nav-link" href="{% url 'accounts:category_list' %}">
+          <i class="fas fa-tags me-2"></i>Catégories
+        </a>
+        <a class="nav-link" href="{% url 'accounts:product_list' %}">
+          <i class="fas fa-boxes me-2"></i>Produits
+        </a>
+        <a class="nav-link" href="{% url 'accounts:sale_list' %}">
+          <i class="fas fa-chart-line me-2"></i>Ventes
+        </a>
+        <hr class="border-white opacity-25">
+        <a class="nav-link" href="{% url 'accounts:logout' %}" onclick="return confirmLogout()">
+          <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="flex-grow-1 p-4" style="background: #f8f9fa;">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0">Tableau de bord</h1>
+        <p class="text-muted mb-0">Vue d'ensemble de votre magasin</p>
+      </div>
+      <div class="text-end" style="min-width:200px;">
+        <div id="live-clock" class="strong-clock">
+          Date : {{ current_datetime|date:"d/m/Y" }}   Heure : {{ current_datetime|date:"H:i" }}:<span id="seconds">{{ current_datetime|date:"s" }}</span>
+        </div>
+        <hr class="clock-separator">
+        <small class="small-clock d-block text-center">Dernière connexion</small>
+        <strong id="last-login" class="d-block text-center">{{ user.last_login|date:"d/m/Y H:i" }}</strong>
+      </div>
     </div>
 
-    <!-- Contenu principal -->
-    <div class="flex-grow-1 p-4" style="background: #f8f9fa;">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <style>
+    .strong-clock { font-family: monospace; font-size:1rem; font-weight:700; white-space: nowrap; }
+    .small-clock { font-size:.85rem; color:green!important; font-weight:600; }
+    #last-login { font-size:.75rem; color:#495057; }
+    .clock-separator { border:none; border-top:2px solid rgba(108,117,125,1); margin:.5rem auto; width:100%; }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setInterval(() => {
+        document.getElementById('seconds').textContent =
+          String(new Date().getSeconds()).padStart(2,'0');
+      }, 1000);
+    });
+    </script>
+
+    <!-- Statistiques -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg,#103cbe,#667eea);">
+          <div class="card-body d-flex justify-content-between align-items-center">
             <div>
-                <h1 class="h3 mb-0">Tableau de bord</h1>
-                <p class="text-muted mb-0">Vue d'ensemble de votre magasin</p>
+              <h5 class="card-title">Ventes du jour</h5>
+              <h3 class="mb-0">{{ sales_today|floatformat:2 }}€</h3>
+              <small>Aujourd'hui</small>
             </div>
-            <div class="text-end">
-                <small class="text-muted">Dernière connexion</small><br>
-                <strong>{{ user.last_login|date:"d/m/Y H:i" }}</strong>
-            </div>
+            <i class="fas fa-euro-sign fa-2x opacity-75"></i>
+          </div>
         </div>
-
-        <!-- Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    <i class="fas fa-{% if message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %} me-2"></i>
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <!-- Statistiques -->
-        <div class="row mb-4">
-            <div class="col-md-3 mb-3">
-                <div class="card text-white" style="background: linear-gradient(135deg, #103cbe, #667eea);">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h5 class="card-title">Ventes du jour</h5>
-                                <h3 class="mb-0">€ 0.00</h3>
-                                <small>Phase 2 à venir</small>
-                            </div>
-                            <i class="fas fa-euro-sign fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg,#28a745,#20c997);">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title">Produits</h5>
+              <h3 class="mb-0">{{ count_products }}</h3>
+              <small>En stock</small>
             </div>
-            <div class="col-md-3 mb-3">
-                <div class="card text-white" style="background: linear-gradient(135deg, #28a745, #20c997);">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h5 class="card-title">Produits</h5>
-                                <h3 class="mb-0">0</h3>
-                                <small>Phase 3 à venir</small>
-                            </div>
-                            <i class="fas fa-boxes fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card text-white" style="background: linear-gradient(135deg, #ffc107, #fd7e14);">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h5 class="card-title">Commandes</h5>
-                                <h3 class="mb-0">0</h3>
-                                <small>Phase 4 à venir</small>
-                            </div>
-                            <i class="fas fa-shopping-cart fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card text-white" style="background: linear-gradient(135deg, #dc3545, #e83e8c);">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h5 class="card-title">Alertes stock</h5>
-                                <h3 class="mb-0">0</h3>
-                                <small>Phase 5 à venir</small>
-                            </div>
-                            <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <i class="fas fa-boxes fa-2x opacity-75"></i>
+          </div>
         </div>
-
-        <!-- Contenu principal -->
-        <div class="row">
-            <div class="col-md-8 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-area me-2"></i>
-                            Graphique des ventes (Bientôt disponible)
-                        </h5>
-                    </div>
-                    <div class="card-body text-center" style="height: 300px; display: flex; align-items: center; justify-content: center;">
-                        <div>
-                            <i class="fas fa-chart-line fa-5x text-muted mb-3"></i>
-                            <h5 class="text-muted">Graphiques des ventes</h5>
-                            <p class="text-muted">Les données de vente apparaîtront ici lors des prochaines phases du développement.</p>
-                        </div>
-                    </div>
-                </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg,#ffc107,#fd7e14);">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title">Commandes</h5>
+              <h3 class="mb-0">{{ count_orders }}</h3>
+              <small>Total général</small>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-clock me-2"></i>
-                            Activité récente
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="timeline">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-sign-in-alt text-white"></i>
-                                </div>
-                                <div>
-                                    <strong>Connexion réussie</strong><br>
-                                    <small class="text-muted">{{ user.last_login|timesince }} ago</small>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-success rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-user-plus text-white"></i>
-                                </div>
-                                <div>
-                                    <strong>Compte créé</strong><br>
-                                    <small class="text-muted">{{ user.date_joined|timesince }} ago</small>
-                                </div>
-                            </div>
-                            <div class="text-center mt-4">
-                                <small class="text-muted">Plus d'activités lors des prochaines phases</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <i class="fas fa-shopping-cart fa-2x opacity-75"></i>
+          </div>
         </div>
-
-        <!-- Actions rapides -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-bolt me-2"></i>
-                            Actions rapides
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3 mb-2">
-                                <button class="btn btn-outline-primary w-100" disabled>
-                                    <i class="fas fa-plus me-2"></i>Nouveau produit
-                                </button>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <button class="btn btn-outline-success w-100" disabled>
-                                    <i class="fas fa-user-plus me-2"></i>Nouvel employé
-                                </button>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <button class="btn btn-outline-info w-100" disabled>
-                                    <i class="fas fa-file-alt me-2"></i>Rapport
-                                </button>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <a href="{% url 'core:caisse' %}" class="btn btn-outline-warning w-100">
-                                    <i class="fas fa-cash-register me-2"></i>Aller à la caisse
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg,#dc3545,#e83e8c);">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title">Alertes stock</h5>
+              <h3 class="mb-0">{{ count_alerts }}</h3>
+              <small>Seuil critique</small>
             </div>
+            <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+          </div>
         </div>
+      </div>
     </div>
+
+    <!-- Graphique 3D Pie et Activité récente côte à côte -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Répartition des ventes (3D)</h5>
+          </div>
+          <div class="card-body">
+            <div id="sales_3d_pie" style="height:300px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Activité récente</h5>
+          </div>
+          <div class="card-body">
+            {% if recent_activities %}
+              {% for act in recent_activities %}
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-{{ act.level }} rounded-circle d-flex align-items-center justify-content-center me-3" style="width:40px;height:40px;">
+                    <i class="fas fa-{{ act.icon }} text-white"></i>
+                  </div>
+                  <div>
+                    <strong>{{ act.verb }}</strong><br>
+                    <small class="text-muted">{{ act.timestamp|date:"d/m/Y H:i" }}</small>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">Aucune activité récente.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-bolt text-warning"></i>Actions rapides</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3 mb-2">
+                <a href="{% url 'accounts:product_add' %}" class="btn btn-outline-primary w-100">
+                  <i class="fas fa-plus me-2"></i>Nouveau produit
+                </a>
+              </div>
+              <div class="col-md-3 mb-2">
+                <a href="{% url 'accounts:employee_add' %}" class="btn btn-outline-success w-100">
+                  <i class="fas fa-user-plus me-2"></i>Nouvel employé
+                </a>
+              </div>
+              <div class="col-md-3 mb-2">
+                <a href="{% url 'core:reports' %}" class="btn btn-outline-info w-100">
+                  <i class="fas fa-file-alt me-2"></i>Rapport
+                </a>
+              </div>
+              <div class="col-md-3 mb-2">
+                <a href="{% url 'core:caisse' %}" class="btn btn-outline-warning w-100">
+                  <i class="fas fa-cash-register me-2"></i>Aller à la caisse
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', { packages: ['corechart'] });
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    const labels = {{ sales_dates|safe }};
+    const values = {{ sales_values|safe }};
+    const dataArray = [['Date','Ventes']];
+    for (let i=0; i<labels.length; i++) {
+      dataArray.push([labels[i], values[i]]);
+    }
+    const data = google.visualization.arrayToDataTable(dataArray);
+    const options = { title:'Répartition des ventes (3D)', is3D:true, legend:{position:'right'} };
+    const chart = new google.visualization.PieChart(document.getElementById('sales_3d_pie'));
+    chart.draw(data, options);
+  }
+</script>
 {% endblock %}

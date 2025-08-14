@@ -1,30 +1,50 @@
 {% extends 'base.html' %}
 {% block title %}Détails Vente {{ sale.invoice_number }}{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-  <h1>Détails de la vente {{ sale.invoice_number }}</h1>
-  <p><strong>Date :</strong> {{ sale.date|date:"d/m/Y H:i" }}</p>
-  <p><strong>Caissier :</strong> {{ sale.cashier.get_full_name }}</p>
-  <p><strong>Client :</strong> {{ sale.customer_name }}</p>
-  <p><strong>Statut :</strong> {{ sale.get_status_display }}</p>
-
-  <h5>Lignes de vente</h5>
-  <table class="table">
-    <thead><tr><th>Produit</th><th>Qté</th><th>PU (€)</th><th>Total (€)</th></tr></thead>
-    <tbody>
-      {% for item in sale.items.all %}
-      <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.unit_price }}</td>
-        <td>{{ item.line_total }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <p class="text-end"><strong>Montant total : {{ sale.total_amount }}€</strong></p>
-
-  <a href="{% url 'accounts:sale_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Retour</a>
-  <a href="{% url 'accounts:sale_update' sale.pk %}" class="btn btn-primary"><i class="fas fa-edit"></i> Modifier</a>
+<div class="container-fluid px-4 mt-5">
+  <div class="card">
+    <div class="card-header fw-bold">
+      <i class="fas fa-file-invoice me-2"></i>Facture {{ sale.invoice_number }}
+    </div>
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col-md-4"><strong>Date :</strong> {{ sale.date|date:"d/m/Y H:i" }}</div>
+        <div class="col-md-4"><strong>Caissier :</strong> {{ sale.cashier.get_full_name }}</div>
+        <div class="col-md-4"><strong>Client :</strong> {{ sale.customer_name }}</div>
+      </div>
+      <table class="table mb-3">
+        <thead class="table-light">
+          <tr>
+            <th>Produit</th>
+            <th class="text-center">Qté</th>
+            <th class="text-end">PU (€)</th>
+            <th class="text-end">Total (€)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in sale.items.all %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td class="text-center">{{ item.quantity }}</td>
+            <td class="text-end">{{ item.unit_price|floatformat:2 }} €</td>
+            <td class="text-end">{{ item.line_total|floatformat:2 }} €</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="text-end fw-bold fs-5">
+        Montant total : {{ sale.total_amount|floatformat:2 }} €
+      </div>
+    </div>
+    <div class="card-footer">
+      <a href="{% url 'accounts:sale_list' %}" class="btn btn-secondary me-2">
+        <i class="fas fa-arrow-left me-1"></i>Retour
+      </a>
+      <a href="{% url 'accounts:sale_update' sale.pk %}" class="btn btn-primary">
+        <i class="fas fa-edit me-1"></i>Modifier
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}

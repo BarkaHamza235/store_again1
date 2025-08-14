@@ -1,112 +1,247 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-
 {% block title %}Gestion des Ventes{% endblock %}
-
 {% block content %}
-<div class="container-fluid py-3">
 
-  <!-- Barre d’action -->
-  <div class="d-flex align-items-center mb-3">
-    <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary me-2">
-      <i class="fas fa-arrow-left"></i> Retour au Dashboard
-    </a>
-    <form method="get" class="me-2 mb-0">
-      <button class="btn btn-primary"><i class="fas fa-sync-alt"></i> Actualiser</button>
-    </form>
-  </div>
-
-  <!-- Filtres et Recherche -->
-  <div class="card mb-3">
-    <div class="card-header fw-bold"><i class="fas fa-filter"></i> Filtres et Recherche</div>
-    <div class="card-body">
-      <form method="get" class="row g-3 align-items-end">
-        <div class="col-md-2">
-          <label class="form-label">N° Facture:</label>
-          {{ search_form.invoice_number }}
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Employé:</label>
-          {{ search_form.cashier }}
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Période  Du:</label>
-          {{ search_form.date_from }}
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Au:</label>
-          {{ search_form.date_to }}
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Statut:</label>
-          {{ search_form.status }}
-        </div>
-        <div class="col-md-2">
-          <button class="btn btn-primary w-100">
-            <i class="fas fa-search"></i> Rechercher
-          </button>
-        </div>
+<div class="container-fluid px-4 mt-5">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 sale-header">
+    <div class="header_titre">
+      <h1 class="h3 mb-0 text-dark-800">
+        <i class="fas fa-shopping-cart me-2 text-light"></i>Gestion des Ventes
+      </h1>
+      <p class="text-muted mb-2">Consultez et filtrez vos ventes</p>
+    </div>
+    <div>
+      <a href="{% url 'core:dashboard' %}" class="btn btn-outline-light me-2">
+        <i class="fas fa-home me-1"></i>Tableau de bord
+      </a>
+      <form method="get" class="d-inline">
+        <button class="btn btn-primary"><i class="fas fa-sync-alt me-1"></i>Actualiser</button>
       </form>
     </div>
   </div>
+  <style>
+    .sale-header { margin-top: -1rem; }
+    .header_titre { margin-top: -1rem; }
+    p { font-size: 14px; margin-left: 70px; color: #fff; }
+  </style>
+
+  <!-- Filtres -->
+  <div class="card mb-3">
+    <div class="card-header text-primary"><i class="fas fa-filter me-2 text-primary"></i>Filtres et Recherche</div>
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-2 facture">
+        <label class="form-label">N° Facture :</label>
+        {{ search_form.invoice_number }}
+      </div>
+      <div class="col-md-2 emp">
+        <label class="form-label">Employé :</label>
+        {{ search_form.cashier }}
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Produit :</label>
+        {{ search_form.product_name }}
+      </div>
+      <div class="col-md-2 date-du">
+        <label class="form-label">Du :</label>
+        {{ search_form.date_from }}
+      </div>
+      <div class="col-md-2 date-au">
+        <label class="form-label">Au :</label>
+        {{ search_form.date_to }}
+      </div>
+      <div class="col-md-2 status">
+        <label class="form-label">Statut :</label>
+        {{ search_form.status }}
+      </div>
+      <div class="col-md-2 search_bouton">
+        <button class="btn btn-primary w-100"><i class="fas fa-search me-1"></i>Rechercher</button>
+      </div>
+    </form>
+    </div>
+  </div>
+  <style>
+    .status {
+      flex: 0 0 12.5%;  /* 12.5% correspond à 1.5 / 12 colonnes */
+      max-width: 12.5%;
+  }
+  .emp {
+      flex: 0 0 15%;  
+      max-width: 15%;
+  }
+  .facture {
+      flex: 0 0 14%;  
+      max-width: 14%;
+  }
+  .date-du,date-au {
+      flex: 0 0 14%;  
+      max-width: 14%;
+  }
+  .date-au {
+      flex: 0 0 14%;  
+      max-width: 14%;
+  }
+  .search_bouton {
+      flex: 0 0 13.5%;  
+      max-width: 14%;
+  }
+</style>
+
 
   <!-- Contenu principal -->
   <div class="row">
-    <!-- Panneau Liste -->
+    <!-- Liste -->
     <div class="col-lg-7">
       <div class="card h-100">
-        <div class="card-header fw-bold">
-          <i class="fas fa-list"></i> Liste des Ventes
-          <span class="float-end text-success">
-            Total: {{ page_obj.paginator.count }} ventes | Chiffre d'affaires: {{ total_revenue }} €
-          </span>
+        <div class="card-header d-flex justify-content-between align-items-center text-primary">
+          <div><i class="fas fa-list me-2 text-primary"></i>Liste des Ventes</div>
+          <div class="text-success">
+            Total : {{ page_obj.paginator.count }} ventes | CA : {{ total_revenue }} €
+          </div>
         </div>
-        <div class="table-responsive card-body" style="max-height:450px;overflow-y:auto;">
-          <table class="table table-sm table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>N° Facture</th>
-                <th>Date</th>
-                <th>Employé</th>
-                <th>Total</th>
-                <th>Articles</th>
-                <th>Heure</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for sale in sales %}
-              <tr style="cursor:pointer"
-                  onclick="window.location.href='{% url 'accounts:sale_detail' sale.pk %}'">
-                <td>{{ sale.invoice_number }}</td>
-                <td>{{ sale.date|date:"d/m/Y" }}</td>
-                <td>{{ sale.cashier.get_full_name }}</td>
-                <td>{{ sale.total_amount }} €</td>
-                <td>{{ sale.items.count }}</td>
-                <td>{{ sale.date|time:"H:i" }}</td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="6" class="text-center">Aucune vente trouvée.</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <div class="card-footer">
-          {% include 'pagination.html' with page_obj=page_obj request=request %}
-        </div>
+        <form method="post" action="{% url 'accounts:sale_bulk_delete' %}">
+          {% csrf_token %}
+          <div class="d-flex justify-content-end pe-3 pt-2">
+            <button type="submit" class="btn btn-danger btn-sm" title="Supprimer sélection">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+          <div class="table-responsive card-body" style="max-height:450px; overflow-y:auto;">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th><input type="checkbox" id="select-all"></th>
+                  <th>N°</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Articles</th>
+                  <th>Heure</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sale in page_obj %}
+                  <tr class="sale-row" data-url="{% url 'accounts:sale_detail_json' sale.pk %}" style="cursor:pointer">
+                    <td>
+                      <input type="checkbox" name="sale_ids" value="{{ sale.pk }}" class="select-item">
+                    </td>
+                    <td>{{ sale.invoice_number }}</td>
+                    <td>{{ sale.date|date:"d/m/Y" }}</td>
+                    <td>{{ sale.total_amount }} €</td>
+                    <td>{{ sale.items.count }}</td>
+                    <td>{{ sale.date|time:"H:i" }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center text-muted py-4">Aucune vente trouvée.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer">
+            <nav class="mt-3">
+              <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a></li>
+                {% endif %}
+                <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+                {% if page_obj.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a></li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </form>
       </div>
     </div>
 
-    <!-- Panneau Détail -->
+    <!-- Détail -->
     <div class="col-lg-5 mt-3 mt-lg-0">
       <div class="card h-100">
-        <div class="card-header fw-bold"><i class="fas fa-info-circle"></i> Détails de la Vente</div>
+        <div class="card-header text-primary"><i class="fas fa-info-circle me-2 text-primary"></i>Détails de la Vente</div>
         <div class="card-body" id="sale-detail">
-          <p>Sélectionnez une vente dans la liste pour afficher les détails ici.</p>
+          <p class="text-muted">Cliquez sur une vente pour voir ses détails.</p>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  // Sélectionner / désélectionner toutes les cases
+  document.getElementById('select-all').addEventListener('change', function(){
+    document.querySelectorAll('.select-item').forEach(cb => cb.checked = this.checked);
+  });
+  // Affichage dynamique détails et navigation
+  document.querySelectorAll('.sale-row').forEach(row => {
+    row.addEventListener('click', e => {
+      if (e.target.tagName !== 'INPUT') {
+        loadDetails(row.dataset.url);
+      }
+    });
+  });
+  /* ------- Affichage dynamique des détails ------- */
+  function loadDetails(url) {
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('sale-detail').innerHTML = `
+          <div class="detail-lines p-2 mb-3" style="font-size:0.85rem;line-height:1.2;">
+            <p class="mb-1"><strong>Facture N° : </strong>${data.invoice_number}</p>
+            <p class="mb-1"><strong>Date : </strong>${data.date}</p>
+            <p class="mb-1"><strong>Employé : </strong>${data.cashier}</p>
+            <hr class="my-2">
+            <p class="mb-1"><strong>Sous-total : </strong>${data.subtotal} €</p>
+            <p class="mb-1"><strong>Remise : </strong>${data.discount} €</p>
+            <p class="mb-2"><strong>Total final : </strong>${data.total_amount} €</p>
+          </div>
+          <h6 class="mt-3 articles-title"><strong>Articles vendus :</strong></h6>
+          <div class="table-responsive articles-table" style="max-height:200px; overflow-y:auto;">
+            <table class="table table-sm mb-0">
+              <thead>
+                <tr>
+                  <th>Article</th>
+                  <th class="text-center">Qté</th>
+                  <th class="text-end">Prix U.</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.items.map(i => `
+                  <tr>
+                    <td>${i.product}</td>
+                    <td class="text-center">${i.quantity}</td>
+                    <td class="text-end">${i.unit_price} €</td>
+                    <td class="text-end">${i.line_total} €</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>`;
+      });
+  }
+  /* ------- Zone détails vide par défaut ------- */
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('sale-detail').innerHTML =
+      '<p class="text-muted">Cliquez sur une vente pour voir ses détails.</p>';
+  });
+</script>
+
+<style>
+  .sale-header { margin-top: -1rem; }
+  .text-gray-800 { color: #5a5c69 !important; }
+  .btn-secondary { background: #6c757d; border-color: #4a4c4d; color: #fff; }
+  /* Texte toujours visible */
+  #sale-detail p, #sale-detail h6, #sale-detail strong { color: #000 !important; }
+  /* Décaler les 6 premières lignes vers la gauche */
+  #sale-detail .detail-lines p:nth-of-type(-n+6) { margin-left: -0.5rem; }
+  /* Alignement articles vendus */
+  #sale-detail .articles-title, #sale-detail .articles-table {
+    margin-left: -0.5rem;
+  }
+  /* Scroll garanti sur la liste */
+  .table-responsive.card-body { overflow-y: auto !important; }
+</style>
+
 {% endblock %}

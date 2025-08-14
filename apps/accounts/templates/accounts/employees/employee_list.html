@@ -4,19 +4,38 @@
 {% block title %}Gestion des Employés{% endblock %}
 
 {% block content %}
-<div class="container-fluid px-4">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-users me-2 text-primary"></i>Gestion des Employés
-            </h1>
-            <p class="text-muted mb-0">Gérez vos employés et leurs informations</p>
-        </div>
-        <a href="{% url 'accounts:employee_add' %}" class="btn btn-primary">
+<div class="container-fluid px-4 mt-5">
+<!-- Header avec ajout et retour au dashboard -->
+<div class="d-flex justify-content-between align-items-center mb-4 employee-header">
+    <div class="header_titre text-dark">
+        <h1 class="h3 mb-0 text-dark-800">
+            <i class="fas fa-users me-2 text-light"></i>Gestion des Employés
+        </h1>
+        <p class="text-muted mb-3">Gérez vos employés et leurs informations</p>
+    </div>
+    <div>
+        <a href="{% url 'accounts:employee_add' %}" class="btn btn-primary me-2">
             <i class="fas fa-user-plus me-2"></i>Ajouter un employé
         </a>
+        <a href="{% url 'core:dashboard' %}" class="btn btn-outline-light">
+            <i class="fas fa-home me-1"></i>Tableau de bord
+        </a>
     </div>
+</div>
+
+<style>
+.employee-header {
+    margin-top: 2rem; /* Ajustez la valeur selon le positionnement souhaité */
+}
+.header_titre{
+    margin-top: -2rem;
+}
+p{
+    font-size: 14px;
+    margin-left: 50px;
+}
+</style>
+
 
     <!-- Statistiques rapides -->
     <div class="row mb-4">
@@ -37,7 +56,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -55,7 +73,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
@@ -73,7 +90,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -180,7 +196,6 @@
                         </tbody>
                     </table>
                 </div>
-
                 {% if is_paginated %}
                     <nav aria-label="Pagination">
                         <ul class="pagination justify-content-center">
@@ -191,13 +206,11 @@
                                     </a>
                                 </li>
                             {% endif %}
-
                             <li class="page-item disabled">
                                 <span class="page-link">
                                     Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
                                 </span>
                             </li>
-
                             {% if page_obj.has_next %}
                                 <li class="page-item">
                                     <a class="page-link" href="?page={{ page_obj.next_page_number }}">
@@ -246,6 +259,11 @@
 }
 .text-gray-300 {
     color: #dddfeb !important;
+}
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
 }
 </style>
 {% endblock %}

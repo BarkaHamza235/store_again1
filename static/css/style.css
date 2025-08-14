@@ -173,3 +173,53 @@
         transform: rotate(360deg);
     }
 }
+
+/* Modal Facture – Glassmorphism et animations */
+#invoiceModal .modal-content {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(209, 213, 219, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  overflow: hidden;
+  animation: modalFadeIn 0.5s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#invoiceModal .modal-header {
+  border-bottom: none;
+  padding-bottom: 0.5rem;
+}
+
+#invoiceModal .modal-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #103cbe;
+}
+
+#invoiceModal .modal-body {
+  padding: 1rem 1.5rem;
+}
+
+#invoiceModal table {
+  margin-top: 0.5rem;
+}
+
+#invoiceModal thead th {
+  border-bottom: 2px solid #103cbe;
+  color: #103cbe;
+  font-weight: 500;
+}
+
+#invoiceModal tbody tr:nth-child(odd) {
+  background: rgba(16, 60, 190, 0.05);
+}
+
+#invoiceModal .text-end strong {
+  color: #103cbe;
+  font-size: 1.1rem;
+}

@@ -26,9 +26,10 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
 
     # Projet
-    'apps.accounts',
+    'apps.accounts.apps.AccountsConfig',
     'apps.core',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,6 +54,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',  # Ajouté pour MEDIA_URL
             ],
         },
     },
@@ -86,14 +88,18 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'fr-fr'
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = 'Africa/Dakar'
 USE_I18N = True
 USE_TZ = True
 
+# Static files (CSS, JavaScript, images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# Media files (uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -101,9 +107,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 # Login/Logout URLs avec namespaces corrects
-LOGIN_URL = 'accounts:login'                    # /accounts/login/
-LOGIN_REDIRECT_URL = 'core:home'               # /core/home/ (redirection intelligente)
-LOGOUT_REDIRECT_URL = 'accounts:login'         # /accounts/login/
+LOGIN_URL = 'accounts:login'             # /accounts/login/
+LOGIN_REDIRECT_URL = 'core:home'         # /core/home/
+LOGOUT_REDIRECT_URL = 'accounts:login'   # /accounts/login/
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

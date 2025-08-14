@@ -92,3 +92,23 @@ class User(AbstractUser):
     verbose_name="Description",
     help_text="Description détaillée du fournisseur"
 )
+    
+#activité recente 
+from django.db import models
+from django.conf import settings
+
+class ActivityLog(models.Model):
+    LEVEL_CHOICES = [
+        ('primary', 'Information'),
+        ('success', 'Succès'),
+        ('warning', 'Avertissement'),
+        ('danger',  'Erreur'),
+    ]
+    user      = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    verb      = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    level     = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='primary')
+    icon      = models.CharField(max_length=50, default='info-circle')  # icône FontAwesome
+
+    class Meta:
+        ordering = ['-timestamp']

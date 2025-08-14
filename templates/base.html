@@ -23,13 +23,11 @@
             --warning-color: #ffc107;
             --info-color: #17a2b8;
         }
-
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-
         .glass {
             backdrop-filter: blur(16px) saturate(180%);
             background: rgba(255, 255, 255, 0.75);
@@ -37,118 +35,165 @@
             border: 1px solid rgba(209, 213, 219, 0.3);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
         }
-
         .fade-in {
             animation: fadeIn 0.8s ease-in-out;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-
         .btn-primary {
             background: var(--primary-color);
             border-color: var(--primary-color);
             transition: all 0.3s ease;
         }
-
         .btn-primary:hover {
             background: #0e35a8;
             border-color: #0e35a8;
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(16, 60, 190, 0.4);
         }
-
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(16, 60, 190, 0.25);
         }
-
-        .alert {
-            border-radius: 15px;
-        }
-
+        .alert { border-radius: 15px; }
         .sidebar {
             background: var(--primary-color);
             min-height: 100vh;
         }
-
         .sidebar .nav-link {
             color: rgba(255, 255, 255, 0.8);
             transition: all 0.3s ease;
         }
-
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
             color: white;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
         }
-
         .card {
             border: none;
             border-radius: 15px;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
         .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
+        
+        /* Notifications toast style */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        
+        .custom-toast {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+        
+        .custom-toast.toast-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .custom-toast.toast-error {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+            color: white;
+        }
+        
+        .custom-toast.toast-warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: white;
+        }
+        
+        .custom-toast.toast-info {
+            background: linear-gradient(135deg, #17a2b8, #6f42c1);
+            color: white;
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    {% block content %}{% endblock %}
+    <!-- Toast Container pour les notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container-fluid p-0">
+        {% block content %}{% endblock %}
+    </div>
 
     <!-- Bootstrap 5.3 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Custom JavaScript -->
     <script>
-        // Gestion automatique des alertes
-        document.addEventListener('DOMContentLoaded', function() {
-            const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
-
-            alerts.forEach(alert => {
-                // Animation d'entrée
-                alert.style.opacity = '0';
-                alert.style.transform = 'translateX(-20px)';
-
+        // Fonction pour créer une notification toast
+        function showToast(message, type = 'success', duration = 5000) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            const toast = document.createElement('div');
+            toast.className = `custom-toast toast-${type} fade show`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex align-items-center p-3">
+                    <div class="me-3">
+                        ${type === 'success' ? '<i class="fas fa-check-circle fa-lg"></i>' : 
+                          type === 'error' ? '<i class="fas fa-exclamation-circle fa-lg"></i>' : 
+                          type === 'warning' ? '<i class="fas fa-exclamation-triangle fa-lg"></i>' : 
+                          '<i class="fas fa-info-circle fa-lg"></i>'}
+                    </div>
+                    <div class="flex-grow-1">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-3" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            // Animation d'entrée
+            toast.style.transform = 'translateX(100%)';
+            toast.style.transition = 'transform 0.3s ease';
+            
+            toastContainer.appendChild(toast);
+            
+            // Animation d'apparition
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 10);
+            
+            // Auto-suppression
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
                 setTimeout(() => {
-                    alert.style.transition = 'all 0.5s ease';
-                    alert.style.opacity = '1';
-                    alert.style.transform = 'translateX(0)';
-                }, 100);
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, duration);
+        }
 
-                // Fermeture automatique après 5 secondes pour les messages de succès
-                if (alert.classList.contains('alert-success')) {
-                    setTimeout(() => {
-                        if (alert && alert.parentNode) {
-                            alert.style.opacity = '0';
-                            alert.style.transform = 'translateX(20px)';
-
-                            setTimeout(() => {
-                                if (alert && alert.parentNode) {
-                                    alert.remove();
-                                }
-                            }, 500);
-                        }
-                    }, 5000);
-                }
-            });
+        // Traitement des messages Django au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if messages %}
+                {% for msg in messages %}
+                    showToast('{{ msg|escapejs }}', '{{ msg.tags }}', 5000);
+                {% endfor %}
+            {% endif %}
         });
 
-        // Confirmation pour les actions de déconnexion
         function confirmLogout() {
             return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');
         }
